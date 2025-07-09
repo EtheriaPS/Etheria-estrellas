@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Estrellas - Etheria Pilates</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f6fd;
+      color: #333;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #a17cc3;
+    }
+    .input-box {
+      margin-top: 1rem;
+    }
+    input[type="text"] {
+      padding: 0.5rem;
+      width: 250px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #a17cc3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .stars {
+      margin-top: 2rem;
+      font-size: 2rem;
+      color: #ffd700;
+    }
+    .message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>⭐ Mis Estrellas - Etheria Pilates</h1>
+  <p>Escribe tu número de celular para ver cuántos sellos has acumulado.</p>
+
+  <div class="input-box">
+    <input type="text" id="telefono" placeholder="Ej. 5523456789">
+    <br>
+    <button onclick="consultarSellos()">Consultar</button>
+  </div>
+
+  <div id="resultado" class="stars"></div>
+  <div id="mensaje" class="message"></div>
+
+  <script>
+    const urlAPI = "https://script.google.com/macros/s/AKfycbxP2srHPXCRyVVh2NuthoMZtSLDHxc3-Y1HMi5CJ_9nS8LZZfLWhE5awCJFfp6VEFfL/exec";
+
+    function consultarSellos() {
+      const tel = document.getElementById("telefono").value.trim();
+      const resultado = document.getElementById("resultado");
+      const mensaje = document.getElementById("mensaje");
+
+      resultado.innerHTML = "";
+      mensaje.innerHTML = "";
+
+      fetch(`${urlAPI}?telefono=${tel}`)
+        .then(res => res.text())
+        .then(data => {
+          if (data === "not_found") {
+            mensaje.innerHTML = "❌ No encontramos tu número. Verifica que esté correcto o pregunta en recepción.";
+            return;
+          }
+          const total = parseInt(data);
+          for (let i = 1; i <= 10; i++) {
+            resultado.innerHTML += i <= total ? "⭐" : "☆";
+          }
+          mensaje.innerHTML = total >= 10
+            ? "🎉 ¡Felicidades! Tienes una clase gratis disponible."
+            : `Llevas ${total} estrella(s). Sigue acumulando para llegar a 10.`;
+        })
+        .catch(() => {
+          mensaje.innerHTML = "⚠️ Error al conectar con el servidor. Intenta más tarde.";
+        });
+    }
+  </script>
+</body>
+</html>
